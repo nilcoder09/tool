@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Smart Subscription Optimizer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --bg-color: #f4f6f8;
+      --text-color: #333;
+      --nav-bg: #fff;
+      --accent-color: #007bff;
+      --btn-hover: #0056b3;
+      --container-bg: #fff;
+      --success-bg: #e9f7ef;
+      --success-border: #28a745;
+      --success-text: #28a745;
+    }
+
+    body.dark {
+      --bg-color: #121212;
+      --text-color: #f1f1f1;
+      --nav-bg: #1c1c1c;
+      --accent-color: #66b2ff;
+      --btn-hover: #3385cc;
+      --container-bg: #1e1e1e;
+      --success-bg: #1d3b2f;
+      --success-border: #57d38c;
+      --success-text: #57d38c;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg-color);
+      margin: 0;
+      color: var(--text-color);
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    /* Navbar */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: var(--nav-bg);
+      padding: 15px 30px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .navbar h1 {
+      margin: 0;
+      font-size: 20px;
+      color: var(--accent-color);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+    }
+
+    .nav-links a,
+    .nav-links button {
+      text-decoration: none;
+      background: none;
+      border: 1px solid var(--accent-color);
+      color: var(--accent-color);
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .nav-links a:hover,
+    .nav-links button:hover {
+      background-color: var(--accent-color);
+      color: white;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 40px auto;
+      background: var(--container-bg);
+      padding: 30px 40px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      text-align: center;
+      color: var(--accent-color);
+      margin-bottom: 30px;
+    }
+
+    label {
+      font-weight: bold;
+      margin-top: 15px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      margin-bottom: 20px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      background-color: #fff;
+    }
+
+    body.dark input,
+    body.dark select {
+      background-color: #2a2a2a;
+      color: var(--text-color);
+      border: 1px solid #444;
+    }
+
+    button[type="submit"] {
+      background-color: var(--accent-color);
+      color: white;
+      padding: 12px;
+      border: none;
+      width: 100%;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button[type="submit"]:hover {
+      background-color: var(--btn-hover);
+    }
+
+    .results {
+      background-color: var(--success-bg);
+      border-left: 5px solid var(--success-border);
+      padding: 20px;
+      margin-bottom: 30px;
+      border-radius: 5px;
+    }
+
+    .results h2 {
+      color: var(--success-text);
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 20px;
+        margin: 20px;
+      }
+
+      .nav-links {
+        flex-direction: column;
+        align-items: flex-end;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <h1>Subscription Insight tool</h1>
+    <div class="nav-links">
+      <a href="/report">Report</a>
+      <button onclick="toggleDarkMode()">Dark Mode</button>
+    </div>
+  </nav>
+
+  <div class="container">
+    <h2>Get Insights into Your Subscription</h2>
+
+    {% if submitted %}
+      <div class="results">
+        <h2>Submission Received!</h2>
+        <p><strong>Subscription Name:</strong> {{ result.sub_name }}</p>
+        <p><strong>Churn Prediction:</strong> {{ result.churn }}</p>
+        <p><strong>Estimated Monthly Spend:</strong> ${{ result.predicted_spend }}</p>
+        <p><strong>Customer Segment Group:</strong> {{ result.cluster }}</p>
+      </div>
+    {% endif %}
+
+    <form method="POST">
+      <label>Subscription Name:</label>
+      <input type="text" name="sub_name" required>
+
+      <label>Monthly Cost ($):</label>
+      <input type="number" name="cost" step="0.01" required>
+
+      <label>Usage Frequency (1(rarely)–10(almost everyday)):</label>
+      <input type="number" name="usage" min="1" max="10" required>
+
+      <label>Satisfaction Score (1–10):</label>
+      <input type="number" name="satisfaction" min="1" max="10" required>
+
+      <label>Payment Method:</label>
+      <select name="payment" required>
+        <option value="Credit Card">Credit Card</option>
+        <option value="PayPal">PayPal</option>
+        <option value="Other">Other</option>
+      </select>
+
+      <label>Region:</label>
+      <select name="region" required>
+        <option value="North">North</option>
+        <option value="South">South</option>
+        <option value="East">East</option>
+        <option value="West">West</option>
+      </select>
+
+      <label>Subscription Length (months):</label>
+      <input type="number" name="length" required>
+
+      <button type="submit">Submit</button>
+    </form>
+  </div>
+
+  <script>
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark');
+    }
+  </script>
+</body>
+</html>
